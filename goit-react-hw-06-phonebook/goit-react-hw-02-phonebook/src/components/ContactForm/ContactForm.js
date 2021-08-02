@@ -1,14 +1,14 @@
 import { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { addContact } from '../../redux/contacts/contacts-actions';
-import { getContacts } from '../../redux/contacts/contacts-selectors';
+import { contactsOperations, contactsSelectors } from '../../redux/contacts';
 import Cleave from 'cleave.js/react';
 import { toast } from 'react-toastify';
 import s from './ContactForm.module.css';
 
 function ContactForm() {
   const dispatch = useDispatch();
-  const contacts = useSelector(getContacts);
+  const contacts = useSelector(contactsSelectors.getContacts);
+  const isLoading = useSelector(contactsSelectors.getLoading);
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
 
@@ -58,7 +58,7 @@ function ContactForm() {
     } else if (checkValidNumber(number)) {
       toast.error('💩 Enter the correct number phone!');
     } else {
-      dispatch(addContact(name, number));
+      dispatch(contactsOperations.addContact(name, number));
     }
     resetInput();
   };
@@ -93,9 +93,11 @@ function ContactForm() {
           className={s.input}
         />
       </label>
+      {!isLoading && (
       <button className={s.btn} type="submit">
         Add contact
       </button>
+      )} 
     </form>
   );
 }
